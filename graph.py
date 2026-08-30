@@ -1,7 +1,6 @@
 from typing import Any
 
 class Graph:
-    pass
 
     def BFS(self, target, order = 'pre'):
         pass

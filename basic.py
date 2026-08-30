@@ -48,10 +48,49 @@ class LinkedList(object):
             ix += 1
 
 class DoublyLinkedList(LinkedList):
-    pass
+    def __init__(self):
+        super().__init__()
+            
+    def append(self, value: Any):
+        new_node = Node(value, None)
+        prev = self.head.prev
+        prev.next = new_node 
+        new_node.next = head 
+        self._length += 1
 
-class Deque(LinkedList):
-    pass
+    def __getitem__(self, i: int):
+        if i > len(self):
+            raise IndexError('list index out of range')
+        cur = self.head
+        if i < len(self) // 2:
+            for ix in range(len(self)):
+                cur = cur.next
+                if ix == i:
+                    return cur.value
+        else:
+            for ix in range(len(self), 0, -1):
+                cur = cur.prev
+                if ix == i:
+                    return cur.value
 
-class Stack(LinkedList):
-    pass
+class Deque(DoublyLinkedList):
+    def appendleft(self, value: Any):
+        new_node = Node(value, None)
+        new_node.next = self.head.next
+        self.head.next = new_node
+        new_node.prev = self.head
+        new_node.next.prev = new_node
+        self._length += 1
+
+    def popleft(self, value: Any):
+        cur = self.head.next
+        self.head.next = cur.next
+        self._length -= 1
+        return cur
+
+class Stack(DoublyLinkedList):
+    def pop(self, value: Any):
+        cur = head.prev
+        head.prev = cur.prev
+        cur.prev.next = head
+        return cur
