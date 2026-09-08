@@ -1,11 +1,28 @@
-from typing import Any
+from typing import Any, List
 
 class Node:
-    def __init__(self, value: Any, left: Node | None, right: Node | None, parent: Node | None):
+    def __init__(self, value: Any, parent: Node | None, children: List[Node] | None)
         self.value = value
         self.parent = parent
-        self.left = left
-        self.right = right
+        self.children =  children
+
+    @property
+    def left(self):
+        if not self.children: return None
+        return self.children[0]
+
+    @property
+    def right(self):
+        if not self.children: return None
+        return self.children[1]
+
+    @left.setter
+    def left(self, val):
+        self.children[0] = val
+
+    @right.setter
+    def right(self, val):
+        self.children[1] = val
 
 class BinaryTree:
     root: Node
@@ -26,11 +43,19 @@ class BinaryTree:
         if right is not None:
             return right
             
+    def __eq__(self, other):
+        sstack, ostack = Stack(), Stack()
+        sstack.push(self.root)
+        ostack.push(other.root)
+        while not sstack.empty and ostack.empty:
+            snode, onode = sstack.pop(), ostack.pop()
+            if snode is None and onode is not None or onode is None and snode isnot None or snode.value != onode.value:
+                return False
+            sstack.extend(snode.children)
+            ostack.extend(onode.children)
+        return True
 
-class BinarySearchTree:
-    root: Node
-    def __init__(self):
-        self.root = Node(None, None)
+class BinarySearchTree(BinaryTree):
        
     def search(self, val: Any, node: Node | str = 'root'):
         if node == 'root': node = self.root
