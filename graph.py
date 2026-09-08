@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Set, Any, Iterable, Tuple, Dict
 
 class Node:
     children: Set
@@ -7,10 +7,10 @@ class Node:
         self.children = children if children is not None else set()
         self.value = value
 
-    @attribute
+    @property
     def degree(self):
         """get out degree"""
-        return len(self.edges)
+        return len(self.children)
     
     def __hash__(self):
         return hash(self.value)
@@ -44,25 +44,34 @@ class Graph:
     def remove(self, nodes:Iterable = None, edges:Iterable = None):
         """remove a set of nodes with all incoming/outgoing edges, or remove a set of edges (retaining nodes of degree zero).
         Do not raise an error if a node/edge is not found."""
-        for e in edges:
-            if e in self.edges:
-                self.edges.remove(e)
-            self.nodes[e[0]].remove(e[1])
-
-        for u in nodes:
-            if u in self.nodes:
-                for v in self.nodes[u].children:
-                    self.edges.remove((u,v))
-                del self.nodes[u]
-
-                to_remove = set()
-                for e in self.edges:
-                    if e[1] == u: # finding incoming edges is O(|E|)
-                        to_remove.add(e)
-                self.edges.differenc_update(to_remove)
+        if edges is not None: 
+            for e in edges:
+                if e in self.edges:
+                    self.edges.remove(e)
+                self.nodes[e[0]].remove(e[1])
+    
+        if nodes is not None: 
+            for u in nodes:
+                if u in self.nodes:
+                    for v in self.nodes[u].children:
+                        self.edges.remove((u,v))
+                    del self.nodes[u]
+    
+                    to_remove = set()
+                    for e in self.edges:
+                        if e[1] == u: # finding incoming edges is O(|E|)
+                            to_remove.add(e)
+                            self.nodes[e[0]].children.remove(e[1])
+                    self.edges.difference_update(to_remove)
+    
+    def __contains__(self, u: Any):
+        return u in self.nodes
 
     def __getitem__(self, u: Any):
         return self.nodes[u]
+
+    def __len__(self):
+        return len(self.nodes)
 
     def BFS(self, target, order = 'pre'):
         pass
