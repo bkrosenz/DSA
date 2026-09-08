@@ -1,19 +1,18 @@
-from typing import Any, List
+from basic import Stack, Deque
+from typing import Any, List, Hashable
 
-class Node:
-    def __init__(self, value: Any, parent: Node | None, children: List[Node] | None)
+class TreeNode:
+    def __init__(self, value: Any, parent: TreeNode | None, children: List[TreeNode] = None):
         self.value = value
         self.parent = parent
-        self.children =  children
+        self.children = [None] * 2 
 
     @property
     def left(self):
-        if not self.children: return None
         return self.children[0]
 
     @property
     def right(self):
-        if not self.children: return None
         return self.children[1]
 
     @left.setter
@@ -25,14 +24,15 @@ class Node:
         self.children[1] = val
 
 class BinaryTree:
-    root: Node
+    root: TreeNode
     def __init__(self):
-        self.root = Node(None, None)
+        self.root = TreeNode(None, None)
+        self._length = 0
        
     def BFS(self, val: Any):
         return self.BFS_recursive(val, self.root)
 
-    def BFS_recursive(self, val, node: Node):
+    def BFS_recursive(self, val, node: TreeNode):
         if node is None: node = self.root
         if node.value == val:
             return node
@@ -45,19 +45,29 @@ class BinaryTree:
             
     def __eq__(self, other):
         sstack, ostack = Stack(), Stack()
-        sstack.push(self.root)
-        ostack.push(other.root)
+        sstack.append(self.root)
+        ostack.append(other.root)
         while not sstack.empty and ostack.empty:
             snode, onode = sstack.pop(), ostack.pop()
-            if snode is None and onode is not None or onode is None and snode isnot None or snode.value != onode.value:
+            if snode is None and onode is not None or onode is None and snode is not None or snode.value != onode.value:
                 return False
             sstack.extend(snode.children)
             ostack.extend(onode.children)
         return True
 
+    def __repr__(self):
+        dfs = []
+        s = Stack()
+        s.append(self.root)
+        while not s.empty:
+            v = s.pop()
+            dfs.append(v.value)
+            s.extend(v.children)
+        return ','.join(map(str, dfs))
+
 class BinarySearchTree(BinaryTree):
        
-    def search(self, val: Any, node: Node | str = 'root'):
+    def search(self, val: Any, node: TreeNode | str = 'root'):
         if node == 'root': node = self.root
         if node is None:
             return None
@@ -69,34 +79,35 @@ class BinarySearchTree(BinaryTree):
     
     def insert(self, val: Any):
         """Inserts a new node with value val as a leaf"""
-        new_node = Node(val, None)
+        new_node = TreeNode(val, None)
         node = self.root
         parent = None
         while node is not None:
             parent = node
-            if val < node.value:
+            if node.value is None or val < node.value:
                 node = node.left
             else:
                 node = node.right
         new_node.parent = parent
-        if parent.val is None: 
+        if parent.value is None: 
             self.root = new_node
-        elif val < parent.val:
+        elif val < parent.value:
             parent.left = new_node
         else:
             parent.right = new_node
+        self._length += 1
     
-    def max(self, node: Node):
+    def max(self, node: TreeNode):
         while node.right is not None:
             node = node.right
         return node
 
-    def min(self, node: Node):
+    def min(self, node: TreeNode):
         while node.left is not None:
             node = node.left
         return node
 
-    def sucessor(self, node: Node):
+    def sucessor(self, node: TreeNode):
         if node.right is not None:
            return self.min(node.right)
         succ = node.parent
@@ -105,7 +116,7 @@ class BinarySearchTree(BinaryTree):
             succ = succ.parent
         return succ
 
-    def delete(self, node: Node):
+    def delete(self, node: TreeNode):
         is_left = node.parent.left == node
         if node.left is None: 
             if node.right is None:

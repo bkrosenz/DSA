@@ -1,9 +1,9 @@
-from typing import Set, Any, Iterable, Tuple, Dict
+from typing import Set, Hashable, Iterable, Tuple, Dict
 
 class Node:
     children: Set
     
-    def __init__(self, value: Any, children: Set[Any] = None): 
+    def __init__(self, value: Hashable, children: Set[Hashable] = None): 
         self.children = children if children is not None else set()
         self.value = value
 
@@ -18,7 +18,7 @@ class Node:
 
 class Graph:
 
-    def __init__(self, edge_list:Iterable[Tuple[Any,Any]] = None, edge_dict:Dict[Any,Iterable[Any]] = None):
+    def __init__(self, edge_list:Iterable[Tuple[Hashable,Hashable]] = None, edge_dict:Dict[Hashable,Iterable[Hashable]] = None):
         self.edges = set()
         self.nodes = {}
         
@@ -28,7 +28,7 @@ class Graph:
             self.nodes = dict.fromkeys(edge_dict.keys())
             self.update(edge_dict = edge_dict)
 
-    def update(self, edge_list:Iterable[Tuple[Any,Any]] = None, edge_dict:Dict[Any,Iterable[Any]] = None):
+    def update(self, edge_list:Iterable[Tuple[Hashable,Hashable]] = None, edge_dict:Dict[Hashable,Iterable[Hashable]] = None):
         """add nodes from adjacency list or adjacency dict"""
         if edge_list is not None:
             self.edges.update(edge_list)
@@ -64,10 +64,10 @@ class Graph:
                             self.nodes[e[0]].children.remove(e[1])
                     self.edges.difference_update(to_remove)
     
-    def __contains__(self, u: Any):
+    def __contains__(self, u: Hashable):
         return u in self.nodes
 
-    def __getitem__(self, u: Any):
+    def __getitem__(self, u: Hashable):
         return self.nodes[u]
 
     def __len__(self):
@@ -92,10 +92,10 @@ def prims_mst(graph: Graph):
 def kruskals_mst(graph: Graph):
     pass
 
-def dijkstra_shortest_path(graph: Graph, source: Any):
+def dijkstra_shortest_path(graph: Graph, source: Hashable):
     pass
 
-def bellman_ford_shortest_path(graph: Graph, source: Any):
+def bellman_ford_shortest_path(graph: Graph, source: Hashable):
     pass
 
 def floyd_warshall_shortest_path(graph: Graph):

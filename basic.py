@@ -4,14 +4,16 @@ class Node(object):
     def __init__(self, val: Any, succ: Node, prev: Node = None):
         self.value = val
         self.next = succ
-        if prev is not None:
-            self.prev = prev
+        self.prev = prev
+
+    def __repr__(self):
+        return f'val: {self.value}, next: {self.next}, prev: {self.prev}'
 
 class LinkedList(object):
     head: Node
 
     def __init__(self):
-        self.head = Node(None,None)
+        self.head = Node(None, None)
 
         self._length: int = 0
 
@@ -50,12 +52,14 @@ class LinkedList(object):
 class DoublyLinkedList(LinkedList):
     def __init__(self):
         super().__init__()
-            
+        self.head = Node(None, None, None)
+        # TODO make head node special to prevent infinite loops even when head and prev are not none
+
     def append(self, value: Any):
-        new_node = Node(value, None)
-        prev = self.head.prev
+        new_node = Node(value, None, None)
+        prev = self.head.prev if len(self) else self.head
         prev.next = new_node 
-        new_node.next = head 
+        new_node.next = self.head 
         self._length += 1
 
     def __getitem__(self, i: int):
@@ -75,7 +79,7 @@ class DoublyLinkedList(LinkedList):
 
 class Deque(DoublyLinkedList):
     def appendleft(self, value: Any):
-        new_node = Node(value, None)
+        new_node = Node(value, None, None)
         new_node.next = self.head.next
         self.head.next = new_node
         new_node.prev = self.head
@@ -94,3 +98,7 @@ class Stack(DoublyLinkedList):
         head.prev = cur.prev
         cur.prev.next = head
         return cur
+
+    def extend(self, values: Iterable):
+        for val in values:
+            self.append(val)
