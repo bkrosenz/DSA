@@ -36,6 +36,17 @@ class LinkedList(object):
             if ix == i:
                 return cur.value
 
+    def __iter__(self):
+        cur = self.head.next
+        # TODO handle empty list
+        while cur is not None:
+            yield cur
+            cur = cur.next
+
+
+    def __repr__(self):
+        return ','.join(v.value for v in self)
+
     def remove(self, i: int):
         if i > len(self):
             raise IndexError('list index out of range')
