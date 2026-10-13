@@ -30,6 +30,8 @@ class LinkedList(object):
     def __getitem__(self, i: int):
         if i > len(self):
             raise IndexError('list index out of range')
+        elif i < 0: i += len(self) 
+
         cur = self.head
         for ix in range(len(self)):
             cur = cur.next

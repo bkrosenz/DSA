@@ -14,6 +14,7 @@ class ListTest(unittest.TestCase):
         assert l[3] == 'h', l[3]
         assert len(l) == 7
         assert str(l) == ','.join(list('aoehtns')), print(str(l)) 
+        assert l[-1] == 's',( l[-1], str(l))
 
     def test_dl(self):
         l = basic.DoublyLinkedList()
