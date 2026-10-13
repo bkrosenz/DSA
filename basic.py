@@ -45,7 +45,7 @@ class LinkedList(object):
 
 
     def __repr__(self):
-        return ','.join(v.value for v in self)
+        return ','.join(str(v.value) for v in self)
 
     def remove(self, i: int):
         if i > len(self):
@@ -71,22 +71,32 @@ class DoublyLinkedList(LinkedList):
         prev = self.head.prev if len(self) else self.head
         prev.next = new_node 
         new_node.next = self.head 
+        self.head.prev = new_node
+
         self._length += 1
 
     def __getitem__(self, i: int):
-        if i > len(self):
+        if i > len(self)-1:
             raise IndexError('list index out of range')
+        elif i < 0: i += len(self) 
         cur = self.head
-        if i < len(self) // 2:
+        
+        if i <= len(self) // 2:
             for ix in range(len(self)):
                 cur = cur.next
                 if ix == i:
                     return cur.value
         else:
-            for ix in range(len(self), 0, -1):
+            for ix in range(len(self)-1, -1, -1):
                 cur = cur.prev
                 if ix == i:
                     return cur.value
+
+    def __iter__(self):
+        cur = self.head.next
+        while cur != self.head:
+            yield cur
+            cur = cur.next
 
 class Deque(DoublyLinkedList):
     def appendleft(self, value: Any):
