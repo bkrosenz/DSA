@@ -42,12 +42,12 @@ class LinkedList(object):
         cur = self.head.next
         # TODO handle empty list
         while cur is not None:
-            yield cur
+            yield cur.value
             cur = cur.next
 
 
     def __repr__(self):
-        return ','.join(str(v.value) for v in self)
+        return ','.join(str(v) for v in self)
 
     def remove(self, i: int):
         if i > len(self):
@@ -61,6 +61,10 @@ class LinkedList(object):
                 prev.next = cur.next
                 return
             ix += 1
+
+    @property
+    def empty(self):
+        return not self._length
 
 class DoublyLinkedList(LinkedList):
     def __init__(self):
@@ -97,31 +101,35 @@ class DoublyLinkedList(LinkedList):
     def __iter__(self):
         cur = self.head.next
         while cur != self.head:
-            yield cur
+            yield cur.value
             cur = cur.next
 
 class Deque(DoublyLinkedList):
     def appendleft(self, value: Any):
         new_node = Node(value, None, None)
-        new_node.next = self.head.next
+        new_node.next = self.head.next if len(self) else self.head
         self.head.next = new_node
         new_node.prev = self.head
         new_node.next.prev = new_node
         self._length += 1
 
-    def popleft(self, value: Any):
+    def popleft(self):
+        if self.empty:
+            raise ValueError("Deque is empty.")
         cur = self.head.next
         self.head.next = cur.next
         self._length -= 1
-        return cur
+        return cur.value
 
-class Stack(DoublyLinkedList):
-    def pop(self, value: Any):
-        cur = head.prev
-        head.prev = cur.prev
-        cur.prev.next = head
-        return cur
+class Stack(Deque):
+    """Stack implemented as Deque, with head.next always pointing to the top of the stack"""
+    def pop(self):
+        return self.popleft()
+
+    def push(self, value:Any):
+        self.appendleft(value)
 
     def extend(self, values: Iterable):
         for val in values:
-            self.append(val)
+            self.push(val)
+

@@ -19,6 +19,8 @@ class Node:
 class Graph:
 
     def __init__(self, edge_list:Iterable[Tuple[Hashable,Hashable]] = None, edge_dict:Dict[Hashable,Iterable[Hashable]] = None):
+        """constructor from edge_list: a list of tuples or edge_dict a mapping from node->neighbors.
+        Internalll maintains an edge list and an edge dict over all update/remove ops."""
         self.edges = set()
         self.nodes = {}
         
@@ -48,7 +50,7 @@ class Graph:
             for e in edges:
                 if e in self.edges:
                     self.edges.remove(e)
-                self.nodes[e[0]].remove(e[1])
+                    self.nodes[e[0]].children.remove(e[1])
     
         if nodes is not None: 
             for u in nodes:
@@ -72,6 +74,9 @@ class Graph:
 
     def __len__(self):
         return len(self.nodes)
+
+    def __repr__(self):
+        return str(self.edges)
 
     def BFS(self, target, order = 'pre'):
         pass

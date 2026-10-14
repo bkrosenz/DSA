@@ -58,11 +58,11 @@ class BinaryTree:
     def __repr__(self):
         dfs = []
         s = Stack()
-        s.append(self.root)
+        s.push(self.root)
         while not s.empty:
             v = s.pop()
-            dfs.append(v.value)
-            s.extend(v.children)
+            dfs.append(v.value) 
+            s.extend(filter(None, v.children))
         return ','.join(map(str, dfs))
 
 class BinarySearchTree(BinaryTree):
@@ -78,7 +78,7 @@ class BinarySearchTree(BinaryTree):
         return self.search(val, node.right)
     
     def insert(self, val: Any):
-        """Inserts a new node with value val as a leaf"""
+        """Inserts a new node with value val as a leaf. Returns the newly created node object"""
         new_node = TreeNode(val, None)
         node = self.root
         parent = None
@@ -96,6 +96,7 @@ class BinarySearchTree(BinaryTree):
         else:
             parent.right = new_node
         self._length += 1
+        return new_node
     
     def max(self, node: TreeNode):
         while node.right is not None:
