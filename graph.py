@@ -76,7 +76,7 @@ class Graph:
         return len(self.nodes)
 
     def __repr__(self):
-        return str(self.edges)
+        return str(sorted(self.edges))
 
     def BFS(self, target, order = 'pre'):
         pass
@@ -98,7 +98,10 @@ def kruskals_mst(graph: Graph):
     pass
 
 def dijkstra_shortest_path(graph: Graph, source: Hashable):
-    pass
+    # TODO: implement weighted graph subclass 
+    unexplored = set(graph.nodes)
+    s = Stack()
+    s.push(source)
 
 def bellman_ford_shortest_path(graph: Graph, source: Hashable):
     pass
